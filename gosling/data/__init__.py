@@ -109,18 +109,18 @@ def _create_loader(
     type_: str,
     create_ts: typing.Callable[[pathlib.Path], tilesets.Tileset] | None = None,
 ):
-    def load(url: pathlib.Path | str, **kwargs):
+    def load(url: pathlib.Path | str, port: int | None = None, **kwargs):
         """Adds resource to data_server if local file is detected."""
         fp = pathlib.Path(url)
         if fp.is_file():
             data = create_ts(fp) if create_ts else fp
-            url = data_server(data)
+            url = data_server(data, port=port)
 
         # bam's index file url
         if "indexUrl" in kwargs:
             fp = pathlib.Path(kwargs["indexUrl"])
             if fp.is_file():
-                kwargs["indexUrl"] = data_server(fp)
+                kwargs["indexUrl"] = data_server(fp, port=port)
 
         return dict(type=type_, url=str(url), **kwargs)
 
